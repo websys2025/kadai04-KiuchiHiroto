@@ -68,9 +68,42 @@
                 item_list[i] = new Item(items[i].name, items[i].price, items[i].stock);
             }
 
-            // 課題4-2. ここにコードを書く
             // 商品表の作成
+            for (let i = 0; i < item_list.length; i++) {
+                const row = document.createElement("tr");
 
+                // 商品名
+                const nameCell = document.createElement("td");
+                nameCell.textContent = item_list[i].name;
+                row.appendChild(nameCell);
+
+                // 金額
+                const priceCell = document.createElement("td");
+                priceCell.textContent = item_list[i].price;
+                row.appendChild(priceCell);
+
+                // 在庫数
+                const stockCell = document.createElement("td");
+                stockCell.id = "stock" + item_list[i].id; // 在庫更新用ID
+                stockCell.textContent = item_list[i].stock;
+                row.appendChild(stockCell);
+
+                // 購入ボタン
+                const btnCell = document.createElement("td");
+                const button = document.createElement("button");
+                button.id = "button" + item_list[i].id;
+                button.textContent = "購入";
+                button.onclick = () => {
+                    item_list[i].buyItem();
+                };
+                btnCell.appendChild(button);
+                row.appendChild(btnCell);
+
+                // テーブルに行を追加
+                itemArea.appendChild(row);
+            }
+
+            Item.showItemList(item_list);
             // クリックイベント時の購入処理の設定
             for (let i=0; i<item_list.length; i++) {
                 // 課題4-3. ここにコードを書く
