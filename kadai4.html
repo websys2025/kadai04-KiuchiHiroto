@@ -6,8 +6,15 @@
     </head>
     <body>
         <h1 id="vending-machine">自動販売機システム</h1>
+        <!-- 所持金の表示 -->
+        <p id="money_area">所持金: 1000円</p>
+        <!-- 購入メッセージの表示 -->
+        <p id="message_area"></p>
+
         <table id="item_area" border="1"></table>
         <script>
+            // 初期所持金
+            let wallet = 1000;
             // 商品一覧を記録する連想配列の配列
             const items =  [
                 { id: 1, name: "緑茶", price: 140, stock: 5 },
@@ -44,15 +51,34 @@
             }
                 // 商品購入の関数
                 buyItem() {
-                    if (this.stock >= 1) {
-                        console.log("商品番号: "+this.id+", 商品名: "+this.name+"を購入します。");
-                        // 購入による商品の在庫削減処理
-                        this.stock--;
-                        const stockElement = document.getElementById("stock" + this.id);
-                        stockElement.textContent = this.stock;
-                        console.log(`残りは${this.stock}個です。`);
-                        // 在庫用のエレメントを抽出し、HTML内の個数を更新
-                    } else console.log(this.name+"は商品の在庫がないため購入できません。");
+                    const messageArea = document.getElementById("message_area");
+
+                    //購入失敗
+                    if (this.stock < 1) {
+                    const msg = `${this.name}は在庫切れのため購入できません。`;
+                    console.log(msg);
+                    messageArea.textContent = msg;
+                    return;
+                    }
+                    if (wallet < this.price) {
+                    const msg = `所持金が足りません。${this.name}を購入できません。`;
+                    console.log(msg);
+                    messageArea.textContent = msg;
+                    return;
+                    }
+
+                    // 購入成功
+                    this.stock--;
+                    wallet -= this.price;
+                    // 在庫表示更新
+                    const stockElement = document.getElementById("stock" + this.id);
+                    stockElement.textContent = this.stock;
+                    // 所持金表示更新
+                    document.getElementById("money_area").textContent = `所持金: ${wallet}円`;
+                    // メッセージ表示
+                    const msg = `商品番号: ${this.id}, 商品名: ${this.name}を購入しました。残金は${wallet}円です。`;
+                    console.log(msg);
+                    messageArea.textContent = msg;
                 }
             } // End of Item class
 
@@ -104,13 +130,6 @@
                 itemArea.appendChild(row);
             }
 
-            Item.showItemList(item_list);
-            // クリックイベント時の購入処理の設定
-            for (let i=0; i<item_list.length; i++) {
-                document.getElementById("button"+item_list[i].id).onclick = () => {
-                    item_list[i].buyItem();
-                }
-            }
             Item.showItemList(item_list);
 
         </script>
